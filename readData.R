@@ -69,7 +69,7 @@ centerCurve <- function(resList){
 
   ## resIdx ist so lang, dass alle zugeschnittenen alphas platz haben
 
-  reducedVecLength <-  noOfPoints - (abs(min(shiftVec)) + max(shiftVec)) - 1
+  reducedVecLength <-  noOfPoints - (abs(min(shiftVec)) + max(shiftVec))
 
 
 
