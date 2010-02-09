@@ -69,9 +69,9 @@ centerCurve <- function(resList){
 
   ## resIdx ist so lang, dass alle zugeschnittenen alphas platz haben
 
-  reducedVecLength <- noOfPoints+min(shiftVec) - max(shiftVec)
+  reducedVecLength <-  noOfPoints - (abs(min(shiftVec)) + max(shiftVec)) - 1
 
-  resIdx <- seq(1,reducedVecLength)
+
 
   datAlpha <- matrix(ncol=reducedVecLength, nrow=noOfScans)
   datNu    <- matrix(ncol=reducedVecLength, nrow=noOfScans)
@@ -81,19 +81,15 @@ centerCurve <- function(resList){
   ## zentrieren der Einzelkurven
   for(i in 1:noOfScans){
 
-    if(shiftVec[i] > 0){
-      l <- shiftVec[i] + 1
-      m <- shiftVec[i] + reducedVecLength
-      print(c(l,m))
-      datAlpha[i,] <- resList$datAlpha[i, l:m]
-    }else{
-      #
-      l <- ((noOfPoints+shiftVec[i]) -reducedVecLength) +1
-      m <- (noOfPoints+shiftVec[i])
+    l <- 1 + max(shiftVec)
+    m <- reducedVecLength + max(shiftVec)
 
-      datAlpha[i,] <-resList$datAlpha[i, l:m]
-    }
+    l <- l - shiftVec[i]
+    m <- l + reducedVecLength - 1
 
+    print(c(shiftVec[i],l,m,length(l:m),reducedVecLength, noOfPoints))
+
+    datAlpha[i,] <- resList$datAlpha[i, l:m]
   }
 
 
