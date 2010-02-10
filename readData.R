@@ -40,11 +40,10 @@ readData <- function(filePath="28of28/",pattern=".txt$"){
          )
 }
 
+## ==============================
 centerCurve <- function(resList){
 
   noOfQuadradicFitPoints <- 100
-
-
 
   noOfScans <- length(resList$datAlpha[,1])
   noOfPoints <- length(resList$datAlpha[1,])
@@ -71,8 +70,6 @@ centerCurve <- function(resList){
 
   reducedVecLength <-  noOfPoints - (abs(min(shiftVec)) + max(shiftVec))
 
-
-
   datAlpha <- matrix(ncol=reducedVecLength, nrow=noOfScans)
   datNu    <- matrix(ncol=reducedVecLength, nrow=noOfScans)
   unsAlpha <- matrix(ncol=reducedVecLength, nrow=noOfScans)
@@ -90,8 +87,10 @@ centerCurve <- function(resList){
     print(c(shiftVec[i],l,m,length(l:m),reducedVecLength, noOfPoints))
 
     datAlpha[i,] <- resList$datAlpha[i, l:m]
+    datNu[i,] <- resList$datNu[i, l:m]
+    unsAlpha[i,] <- resList$unsAlpha[i, l:m]
+    unsNu[i,] <- resList$unsNu[i, l:m]
   }
-
 
   return( list(datAlpha=datAlpha,
                datNu=datNu,
@@ -100,26 +99,7 @@ centerCurve <- function(resList){
                shiftVec=shiftVec)
          )
 }
-
-
-
 ## ==============================
-calVarCovar <- function(datMat, mvMat){
-
-noOfScans <-length(datMat[,1])
-lengthOfScan <-length(datMat[1,])
-
-resMat<- matrix(ncol=lengthOfScan ,nrow=lengthOfScan )
-
-for(i in 1:lengthOfScan ){
-    for(k in 1:lengthOfScan ){
-
-      resMat[i,k] <- sum( (datMat[,i] - mvMat[i])*(datMat[,k] - mvMat[k]))/noOfScans
-    }
-  }
-return(resMat)
-}
-
 calSdMv <- function(datMat, unsMat){
 
   noOfScans <-length(datMat[,1])
@@ -129,6 +109,7 @@ calSdMv <- function(datMat, unsMat){
   mvMat <- NULL
   sdMat <- NULL
   mvUnsMat <- NULL
+
   for(l in 1:lengthOfScan){
     mvMat[l] <- mean(datMat[,l])
     mvUnsMat[l]<- mean(unsMat[,l])
@@ -141,24 +122,45 @@ return(list(mvMat = mvMat,
             ))
 }
 
+
+## ==============================
+calVarCovar <- function(datX, mvX, datY, mvY){
+
+noOfX <-length(datX[,1])
+noOfY <-length(datY[,1])
+
+lengthOfX <-length(datX[1,])
+lengthOfY <-length(datY[1,])
+
+resMat<- matrix(ncol=lengthOfX ,nrow=lengthOfY )
+
+for(i in 1:lengthOfX ){
+    for(k in 1:lengthOfY ){
+
+      resMat[i,k] <- sum( (datX[,i] - mvX[i])*(datY[,k] - mvY[k]))/noOfX
+    }
+  }
+return(resMat)
+}
+
+
 reduceBy <- 10
 
-resList <- readData()
-idx <- seq(1,length(resList$datMat[1,]), reduceBy)
+dat <- centerCurve(resList)
 
-datMat <-  resList$datMat[,idx]
-unsMat <-  resList$unsMat[,idx]
+datMat <-  dat$datAlpha
+unsMat <-  dat$unsAlpha
 
 msd <- calSdMv(datMat, unsMat)
 mvMat <- msd$mvMat
 sdMat <- msd$sdMat
 unsMvMat <- msd$mvUnsMat
 
-ua <- ((sdMat)^2)^.5 # +  (unsMvMat)^2)^.5
+ua <- sdMat# +  (unsMvMat)^2)^.5
 
 uaMat <- outer(ua,ua,function(x,y){return(x*y)})
 
-res <- calVarCovar(datMat, mvMat)/uaMat
+res <- calVarCovar(datMat,datMat, mvMat, mvMat)/uaMat
 
 colS <-  heat.colors(10)
 
