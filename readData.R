@@ -132,6 +132,8 @@ noOfY <-length(datY[,1])
 lengthOfX <-length(datX[1,])
 lengthOfY <-length(datY[1,])
 
+print(c(noOfX,noOfY,lengthOfX,lengthOfY))
+
 resMat<- matrix(ncol=lengthOfX ,nrow=lengthOfY )
 
 for(i in 1:lengthOfX ){
@@ -145,6 +147,8 @@ return(resMat)
 
 
 reduceBy <- 10
+
+resList <- readData()
 
 dat <- centerCurve(resList)
 
