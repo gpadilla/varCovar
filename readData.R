@@ -144,6 +144,7 @@ for(i in 1:lengthOfX ){
   }
 return(resMat)
 }
+
 ## ==============================
 plotRes <- function(xLab, yLab, noOfCol=10){
 
@@ -157,37 +158,62 @@ plotRes <- function(xLab, yLab, noOfCol=10){
         ylab=yLab)
 
   legend(.0,idx[length(idx)],
-               round(seq(min(res), max(res),(max(res) -min(res))/(noOfCol -1)),3),
-               col=colS,
-               lty=rep(1,noOfCol),
-               lwd=10)
-
+         round(seq(min(res), max(res),(max(res) -min(res))/(noOfCol -1)),3),
+         col=colS,
+         lty=rep(1,noOfCol),
+         lwd=10)
       }
-
-reduceBy <- 10
+## ==============================
 
 resList <- readData()
 
 dat <- centerCurve(resList)
-
+# <-->> dat <- centerCurve(resList)
+# <-->[1]    1    4 1444 1441 1441 1449
+# <-->[1]   -4    9 1449 1441 1441 1449
+# <-->[1]   -3    8 1448 1441 1441 1449
+# <-->[1]    1    4 1444 1441 1441 1449
+# <-->[1]   -2    7 1447 1441 1441 1449
+# <-->[1]    4    1 1441 1441 1441 1449
+# <-->[1]    2    3 1443 1441 1441 1449
+# <-->[1]   -2    7 1447 1441 1441 1449
+# <-->[1]    0    5 1445 1441 1441 1449
+# <-->[1]    4    1 1441 1441 1441 1449
+# <-->[1]    3    2 1442 1441 1441 1449
+# <-->[1]   -2    7 1447 1441 1441 1449
+# <-->>
+# <-->> check <- centerCurve(dat)
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->[1]    0    1 1441 1441 1441 1441
+# <-->>
 ## xLab <- expression(paste( nu,", ",alpha))
 ## yLab <- expression(paste( nu,", ",alpha))
+
+#--------------------X--------------------
 xLab <- expression(paste( alpha))
+datX <-  dat$datAlpha
+unsX <-  dat$unsAlpha
+msd <- calSdMv(datX, unsX)
+mvX <- msd$mvMat
+sdX <- msd$sdMat
+#--------------------Y--------------------
 yLab <- expression(paste( alpha))
+datY <- datX
+mvY <- mvX
 
-datMat <-  dat$datAlpha
-unsMat <-  dat$unsAlpha
+uaX <- outer(sdX,sdX,function(x,y){return(x*y)})
 
-msd <- calSdMv(datMat, unsMat)
-mvMat <- msd$mvMat
-sdMat <- msd$sdMat
-unsMvMat <- msd$mvUnsMat
-
-ua <- sdMat
-
-uaMat <- outer(ua,ua,function(x,y){return(x*y)})
-
-res <- calVarCovar(datMat, mvMat,datMat, mvMat)/uaMat
+res <- calVarCovar(datX, mvX,datY, mvY)/uaX
 plotRes(xLab, yLab,10)
 
 
