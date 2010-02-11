@@ -200,18 +200,26 @@ dat <- centerCurve(resList)
 ## yLab <- expression(paste( nu,", ",alpha))
 
 #--------------------X--------------------
-xLab <- expression(paste( alpha))
-datX <-  dat$datAlpha
-unsX <-  dat$unsAlpha
+xLab <- expression(paste( nu))
+datX <-  dat$datNu
+unsX <-  dat$unsNu
 msd <- calSdMv(datX, unsX)
 mvX <- msd$mvMat
 sdX <- msd$sdMat
 #--------------------Y--------------------
+# yLab <- expression(paste( nu))
+# datY <- datX
+# mvY <- mvX
+#--------------------Y--------------------
 yLab <- expression(paste( alpha))
-datY <- datX
-mvY <- mvX
+datY <-  dat$datAlpha
+unsY <-  dat$unsAlpha
+msd <- calSdMv(datY, unsY)
+mvY <- msd$mvMat
+sdY <- msd$sdMat
 
-uaX <- outer(sdX,sdX,function(x,y){return(x*y)})
+
+uaX <- outer(sdX,sdY,function(x,y){return(x*y)})
 
 res <- calVarCovar(datX, mvX,datY, mvY)/uaX
 plotRes(xLab, yLab,10)
