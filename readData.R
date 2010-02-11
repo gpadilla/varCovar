@@ -144,13 +144,36 @@ for(i in 1:lengthOfX ){
   }
 return(resMat)
 }
+## ==============================
+plotRes <- function(xLab, yLab, noOfCol=10){
 
+  colS <-  heat.colors(noOfCol)
+
+  idx <- seq(1,length(res[,1]))
+
+  image(idx,idx,res,
+        col=colS,
+        xlab=xLab,
+        ylab=yLab)
+
+  legend(.0,idx[length(idx)],
+               round(seq(min(res), max(res),(max(res) -min(res))/(noOfCol -1)),3),
+               col=colS,
+               lty=rep(1,noOfCol),
+               lwd=10)
+
+      }
 
 reduceBy <- 10
 
 resList <- readData()
 
 dat <- centerCurve(resList)
+
+## xLab <- expression(paste( nu,", ",alpha))
+## yLab <- expression(paste( nu,", ",alpha))
+xLab <- expression(paste( alpha))
+yLab <- expression(paste( alpha))
 
 datMat <-  dat$datAlpha
 unsMat <-  dat$unsAlpha
@@ -160,21 +183,12 @@ mvMat <- msd$mvMat
 sdMat <- msd$sdMat
 unsMvMat <- msd$mvUnsMat
 
-ua <- sdMat# +  (unsMvMat)^2)^.5
+ua <- sdMat
 
 uaMat <- outer(ua,ua,function(x,y){return(x*y)})
 
-res <- calVarCovar(datMat,datMat, mvMat, mvMat)/uaMat
+res <- calVarCovar(datMat, mvMat,datMat, mvMat)/uaMat
+plotRes(xLab, yLab,10)
 
-colS <-  heat.colors(10)
 
-image(idx,idx,res,col=colS,
-      xlab=expression(paste( nu,", ",alpha)),
-      ylab=expression(paste( nu,", ",alpha)))
-##contour(idx,idx,res, add=TRUE)
-legend(.0,idx[length(idx)],
-       round(seq(min(res), max(res),(max(res) -min(res))/(reduceBy -1)),3),
-       col=colS,
-       lty=rep(1,reduceBy),
-       lwd=10)
 
