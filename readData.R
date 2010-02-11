@@ -28,7 +28,7 @@ readData <- function(filePath="28of28/",pattern=".txt$"){
       datAlpha[k,] <- tmpDat[,3]
       datNu[k,]    <- tmpDat[,1]
       unsAlpha[k,] <- tmpDat[,4]
-      unsNu[k,]        <- tmpDat[,2]
+      unsNu[k,]    <- tmpDat[,2]
     }
 
   }
@@ -108,17 +108,17 @@ calSdMv <- function(datMat, unsMat){
 
   mvMat <- NULL
   sdMat <- NULL
-  mvUnsMat <- NULL
+ # mvUnsMat <- NULL
 
   for(l in 1:lengthOfScan){
     mvMat[l] <- mean(datMat[,l])
-    mvUnsMat[l]<- mean(unsMat[,l])
+  #  mvUnsMat[l]<- mean(unsMat[,l])
     sdMat[l] <- sd(datMat[,l])
   }
 
 return(list(mvMat = mvMat,
-            sdMat= sdMat,
-            mvUnsMat=mvUnsMat
+            sdMat= sdMat
+           # mvUnsMat=mvUnsMat
             ))
 }
 
@@ -203,20 +203,21 @@ dat <- centerCurve(resList)
 xLab <- expression(paste( nu))
 datX <-  dat$datNu
 unsX <-  dat$unsNu
-msd <- calSdMv(datX, unsX)
+msd <- calSdMv(datX)
 mvX <- msd$mvMat
 sdX <- msd$sdMat
 #--------------------Y--------------------
-# yLab <- expression(paste( nu))
-# datY <- datX
-# mvY <- mvX
+yLab <- expression(paste( nu))
+datY <- datX
+mvY <- mvX
+sdY <- sdX
 #--------------------Y--------------------
-yLab <- expression(paste( alpha))
-datY <-  dat$datAlpha
-unsY <-  dat$unsAlpha
-msd <- calSdMv(datY, unsY)
-mvY <- msd$mvMat
-sdY <- msd$sdMat
+# yLab <- expression(paste( alpha))
+# datY <-  dat$datAlpha
+# unsY <-  dat$unsAlpha
+# msd <- calSdMv(datY)
+# mvY <- msd$mvMat
+# sdY <- msd$sdMat
 
 
 uaX <- outer(sdX,sdY,function(x,y){return(x*y)})
