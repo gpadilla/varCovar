@@ -112,8 +112,9 @@ calSdMv <- function(datMat, unsMat){
 
   for(l in 1:lengthOfScan){
     mvMat[l] <- mean(datMat[,l])
-  #  mvUnsMat[l]<- mean(unsMat[,l])
-    sdMat[l] <- sd(datMat[,l])
+    ##  mvUnsMat[l]<- mean(unsMat[,l])
+    ## sd uses n-1 as denominator
+    sdMat[l] <- sd(datMat[,l])*sqrt(noOfScans - 1)/sqrt(noOfScans)
   }
 
 return(list(mvMat = mvMat,
@@ -200,14 +201,14 @@ dat <- centerCurve(resList)
 ## yLab <- expression(paste( nu,", ",alpha))
 
 #--------------------X--------------------
-xLab <- expression(paste( nu))
-datX <-  dat$datNu
-unsX <-  dat$unsNu
+xLab <- expression(paste( alpha))
+datX <-  dat$datAlpha
+unsX <-  dat$unsAlpha
 msd <- calSdMv(datX)
 mvX <- msd$mvMat
 sdX <- msd$sdMat
 #--------------------Y--------------------
-yLab <- expression(paste( nu))
+yLab <- xLab
 datY <- datX
 mvY <- mvX
 sdY <- sdX
