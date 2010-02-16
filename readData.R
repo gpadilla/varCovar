@@ -201,9 +201,9 @@ dat <- centerCurve(resList)
 ## yLab <- expression(paste( nu,", ",alpha))
 
 #--------------------X--------------------
-xLab <- expression(paste( alpha))
-datX <-  dat$datAlpha
-unsX <-  dat$unsAlpha
+xLab <- expression(paste(Delta,nu))
+datX <-  t(diff(t(dat$datNu)))
+                                        #unsX <-  dat$unsNu
 msd <- calSdMv(datX)
 mvX <- msd$mvMat
 sdX <- msd$sdMat
